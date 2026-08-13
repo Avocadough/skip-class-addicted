@@ -18,9 +18,9 @@
 |---|---|---|
 | Move | A/D or Arrow keys | Left/right buttons |
 | Run | Shift | Run button |
-| Jump | Space | Jump button |
-| Crouch / hide | S or Down | Hide button |
-| Interact | E | Use button |
+| Jump / Double Jump | Space (press twice) | Jump button (tap twice) |
+| Crouch | S or Down | Hide button |
+| Interact / enter-exit hide spot | E (Space also exits) | Use button |
 | Use item | Q | Item button |
 | Select inventory | 1–3 | Tap a slot |
 | Pause | Esc | — |

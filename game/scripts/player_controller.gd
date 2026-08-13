@@ -12,6 +12,7 @@ const RUN_SPEED := 245.0
 const CROUCH_SPEED := 82.0
 const JUMP_VELOCITY := -430.0
 const GRAVITY := 1200.0
+const MAX_JUMPS := 2
 
 var state := PlayerState.IDLE
 var is_hidden := false
@@ -21,6 +22,8 @@ var facing := 1.0
 var _noise_cooldown := 0.0
 var _virtual: Dictionary = {}
 var _was_on_floor := false
+var jumps_remaining := MAX_JUMPS
+var _hide_exit_blocked := false
 
 
 func _ready() -> void:
@@ -37,17 +40,35 @@ func _ready() -> void:
 	queue_redraw()
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not event.is_echo() and is_hidden and (event.is_action_pressed("interact") or event.is_action_pressed("jump")):
+		_hide_exit_blocked = true
+		interact_requested.emit()
+		get_viewport().set_input_as_handled()
+
+
 func _physics_process(delta: float) -> void:
 	_noise_cooldown = maxf(0.0, _noise_cooldown - delta)
+	if _hide_exit_blocked and not Input.is_action_pressed("interact") and not Input.is_action_pressed("jump"):
+		_hide_exit_blocked = false
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 
-	if not controls_enabled or is_hidden:
+	if is_hidden:
 		velocity.x = move_toward(velocity.x, 0.0, 900.0 * delta)
-		if is_hidden:
-			state = PlayerState.HIDE
+		state = PlayerState.HIDE
+		if _consume_virtual_tap("interact") or _consume_virtual_tap("jump"):
+			interact_requested.emit()
 		move_and_slide()
 		return
+
+	if not controls_enabled:
+		velocity.x = move_toward(velocity.x, 0.0, 900.0 * delta)
+		move_and_slide()
+		return
+
+	if is_on_floor():
+		jumps_remaining = MAX_JUMPS
 
 	var axis := Input.get_axis("move_left", "move_right")
 	axis += float(_virtual.get("move_right", false)) - float(_virtual.get("move_left", false))
@@ -59,12 +80,14 @@ func _physics_process(delta: float) -> void:
 	if absf(axis) > 0.01:
 		facing = signf(axis)
 
-	if _just_pressed("jump") and is_on_floor() and not is_crouching:
+	var jump_requested := _just_pressed("jump")
+	if not _hide_exit_blocked and jump_requested and jumps_remaining > 0 and not is_crouching:
 		velocity.y = JUMP_VELOCITY
+		jumps_remaining -= 1
 		AudioManager.play_sfx("jump")
 		noise_emitted.emit(global_position, 105.0)
 
-	if _just_pressed("interact"):
+	if not _hide_exit_blocked and _just_pressed("interact"):
 		interact_requested.emit()
 	if _just_pressed("use_item"):
 		item_use_requested.emit()
@@ -122,7 +145,12 @@ func set_hidden(value: bool) -> void:
 	is_hidden = value
 	if value:
 		velocity = Vector2.ZERO
+		is_crouching = false
 	queue_redraw()
+
+
+func clear_virtual_actions() -> void:
+	_virtual.clear()
 
 
 func set_caught() -> void:
@@ -139,6 +167,10 @@ func set_virtual_action(action: String, pressed: bool) -> void:
 func _just_pressed(action: String) -> bool:
 	if Input.is_action_just_pressed(action):
 		return true
+	return _consume_virtual_tap(action)
+
+
+func _consume_virtual_tap(action: String) -> bool:
 	var key := "%s_just" % action
 	if bool(_virtual.get(key, false)):
 		_virtual[key] = false

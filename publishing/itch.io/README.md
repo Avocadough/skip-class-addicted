@@ -16,9 +16,9 @@
 
 - A/D or Arrow keys: Move
 - Shift: Run (fast but noisy)
-- Space: Jump
-- S / Down: Crouch or hide
-- E: Interact
+- Space: Jump / Double Jump (press twice); also exits a hide spot
+- S / Down: Crouch and reduce visibility
+- E: Interact / enter or exit a hide spot
 - Q: Use selected item
 - 1–3: Select inventory slot
 - Esc: Pause

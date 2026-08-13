@@ -18,11 +18,32 @@ func _run() -> void:
 		level.player.controls_enabled = true
 		GameState.begin_countdown()
 		if index == 1:
-			level._nearest = level.interactables.filter(func(item: Dictionary) -> bool: return item.kind == "hide")[0]
-			level._on_interact()
+			var hide_spot: Dictionary = level.interactables.filter(func(item: Dictionary) -> bool: return item.kind == "hide")[0]
+			level.player.position.x = hide_spot.node.position.x
+			await get_tree().process_frame
+			level._update_interaction_prompt()
+			var interact_press := InputEventAction.new()
+			interact_press.action = "interact"
+			interact_press.pressed = true
+			Input.parse_input_event(interact_press)
+			await get_tree().process_frame
+			await get_tree().physics_frame
+			interact_press.pressed = false
+			Input.parse_input_event(interact_press)
+			await get_tree().process_frame
+			await get_tree().physics_frame
 			if not level.player.is_hidden:
-				errors.append("Level 1 hide interaction failed")
-			level._on_interact()
+				errors.append("Level 1 enter-hide input failed")
+			var jump_press := InputEventAction.new()
+			jump_press.action = "jump"
+			jump_press.pressed = true
+			Input.parse_input_event(jump_press)
+			await get_tree().process_frame
+			await get_tree().physics_frame
+			jump_press.pressed = false
+			Input.parse_input_event(jump_press)
+			if level.player.is_hidden:
+				errors.append("Level 1 exit-hide input failed")
 			level._nearest = level.interactables.filter(func(item: Dictionary) -> bool: return item.kind == "exit")[0]
 		elif index == 2:
 			level._nearest = level.interactables.filter(func(item: Dictionary) -> bool: return item.get("item") == "coin")[0]
