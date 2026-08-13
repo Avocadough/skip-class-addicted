@@ -8,7 +8,7 @@ const LEVELS := {
 		"time": 60.0,
 		"width": 2450.0,
 		"objective": "ผ่านทางเดินและไปถึงบันได EXIT",
-		"intro": "ครูเวรกำลังเดินตรวจ! ซ่อนในตู้ด้วย E หรือย่อหลังโต๊ะด้วย S\nเดินช้าเงียบกว่า — วิ่งเร็วแต่ครูได้ยิน",
+		"intro": "ครูเวรกำลังเดินตรวจ! กด E เพื่อเข้า/ออกตู้ และกด Space ซ้ำเพื่อ Double Jump\nย่อด้วย S จะถูกมองเห็นยากขึ้น — วิ่งเร็วแต่ครูได้ยิน",
 	},
 	2: {
 		"title": "ด่าน 2 • โรงอาหาร",
@@ -42,6 +42,8 @@ var _dialogue_open := false
 var _ending := false
 var _world_width := 2450.0
 var _camera: Camera2D
+var _active_hide_spot: Dictionary = {}
+var _dialogue_triggered := false
 
 
 func _ready() -> void:
@@ -65,7 +67,7 @@ func _process(delta: float) -> void:
 	_update_interaction_prompt()
 	if player.global_position.y > 780.0:
 		GameState.catch_player("ตกจากทางเดิน! กลับมาเริ่มใหม่")
-	if level_index == 3 and not _dialogue_done and player.global_position.x > 1390.0 and not _dialogue_open:
+	if level_index == 3 and not _dialogue_done and not _dialogue_triggered and player.global_position.x > 1390.0 and not _dialogue_open:
 		_open_dialogue()
 
 
@@ -265,6 +267,10 @@ func _add_bookshelf(center: Vector2) -> void:
 func _update_interaction_prompt() -> void:
 	if hud == null or _ending or _dialogue_open:
 		return
+	if player.is_hidden and not _active_hide_spot.is_empty():
+		_nearest = _active_hide_spot
+		hud.set_prompt("E / Space  ออกจากที่ซ่อน • %s" % _active_hide_spot.label)
+		return
 	_nearest = {}
 	var nearest_distance := INF
 	for item in interactables:
@@ -283,11 +289,21 @@ func _update_interaction_prompt() -> void:
 
 
 func _on_interact() -> void:
-	if _nearest.is_empty() or _ending:
+	if _ending:
+		return
+	if player.is_hidden:
+		player.set_hidden(false)
+		GameState.grant_stealth_grace(1.8)
+		_active_hide_spot = {}
+		AudioManager.play_sfx("door")
+		return
+	if _nearest.is_empty():
 		return
 	match String(_nearest.kind):
 		"hide":
-			player.set_hidden(not player.is_hidden)
+			_active_hide_spot = _nearest
+			player.set_hidden(true)
+			GameState.set_suspicion(maxf(0.0, GameState.suspicion - 45.0))
 			AudioManager.play_sfx("door")
 		"pickup":
 			if GameState.add_item(_nearest.item):
@@ -336,8 +352,10 @@ func _on_player_noise(position_value: Vector2, radius: float) -> void:
 
 
 func _open_dialogue() -> void:
+	_dialogue_triggered = true
 	_dialogue_open = true
 	player.controls_enabled = false
+	player.clear_virtual_actions()
 	player.velocity = Vector2.ZERO
 	hud.show_dialogue("หัวหน้าห้องมายด์", "มายด์: น็อต! มาทำอะไรในห้องสมุดตอนเข้าเรียน?", ["ครูใช้ให้เอาการบ้านมาคืน", "มาหาที่งีบ เงียบดี"])
 
@@ -346,15 +364,17 @@ func _on_dialogue_answered(choice: int) -> void:
 	if not _dialogue_open:
 		return
 	_dialogue_open = false
-	player.controls_enabled = true
-	if choice == 0 and GameState.consume_item("homework"):
-		_dialogue_done = true
+	_dialogue_done = choice == 0 and GameState.has_item("homework")
+	if _dialogue_done:
+		GameState.consume_item("homework")
 		AudioManager.play_sfx("complete")
 		GameState.set_objective("ข้ออ้างผ่านแล้ว — หา Storage Key และไป EXIT")
 	else:
-		GameState.add_suspicion(35.0)
+		_dialogue_triggered = false
+		GameState.add_suspicion(20.0)
 		player.position.x = 1270.0
 		GameState.set_objective("ข้ออ้างยังไม่เนียน — หา Homework ก่อนกลับมา")
+	player.controls_enabled = true
 
 
 func _on_caught(reason: String) -> void:

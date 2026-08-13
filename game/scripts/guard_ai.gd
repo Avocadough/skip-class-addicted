@@ -10,9 +10,9 @@ var role := "ครูเวร"
 var uniform_color := Color("73446f")
 var facing := -1.0
 var state := AIState.PATROL
-var vision_range := 470.0
-var patrol_speed := 62.0
-var chase_speed := 135.0
+var vision_range := 310.0
+var patrol_speed := 48.0
+var chase_speed := 96.0
 var _target_x := 0.0
 var _last_seen := 0.0
 var _alert_flash := 0.0
@@ -47,10 +47,10 @@ func _physics_process(delta: float) -> void:
 	var can_see := _can_see_player()
 	if can_see:
 		state = AIState.CHASE
-		_last_seen = 1.25
+		_last_seen = 0.5
 		_target_x = player.global_position.x
 		_alert_flash = 0.12
-		GameState.report_detection(44.0 * delta)
+		GameState.report_detection(9.0 * delta)
 	elif state == AIState.CHASE:
 		_last_seen -= delta
 		if _last_seen <= 0.0:
@@ -76,8 +76,8 @@ func _physics_process(delta: float) -> void:
 		facing = signf(middle - global_position.x)
 		velocity.x = facing * patrol_speed
 	move_and_slide()
-	if player and not player.is_hidden and global_position.distance_to(player.global_position) < 48.0:
-		GameState.add_suspicion(100.0)
+	if player and not player.is_hidden and global_position.distance_to(player.global_position) < 42.0:
+		GameState.report_detection(20.0 * delta)
 	queue_redraw()
 
 
@@ -97,6 +97,8 @@ func _can_see_player() -> bool:
 	var target := player.global_position + Vector2(0, -42)
 	var offset := target - eye
 	if offset.length() > vision_range or absf(offset.y) > 175.0:
+		return false
+	if player.is_crouching and offset.length() > 130.0:
 		return false
 	if signf(offset.x) != facing or absf(offset.x) < 1.0:
 		return false

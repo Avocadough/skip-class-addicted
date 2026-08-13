@@ -3,7 +3,7 @@ extends Node2D
 
 var player: SkipClassPlayer
 var sweep_offset := 0.0
-var range := 520.0
+var range := 360.0
 var _time := 0.0
 var _detected := false
 
@@ -17,7 +17,7 @@ func _process(delta: float) -> void:
 	_time += delta
 	_detected = _can_see_player()
 	if _detected:
-		GameState.report_detection(31.0 * delta)
+		GameState.report_detection(7.0 * delta)
 	queue_redraw()
 
 
@@ -33,7 +33,9 @@ func _can_see_player() -> bool:
 	var offset := target - global_position
 	if offset.length() > range or offset.y < 0.0:
 		return false
-	if _direction().dot(offset.normalized()) < cos(0.37):
+	if player.is_crouching and offset.length() > 170.0:
+		return false
+	if _direction().dot(offset.normalized()) < cos(0.3):
 		return false
 	var query := PhysicsRayQueryParameters2D.create(global_position, target, 1)
 	return get_world_2d().direct_space_state.intersect_ray(query).is_empty()
@@ -42,7 +44,7 @@ func _can_see_player() -> bool:
 func _draw() -> void:
 	var direction := _direction()
 	var perpendicular := direction.rotated(PI * 0.5)
-	var width := 195.0
+	var width := 140.0
 	var color := Color("ff315f55") if _detected else Color("ffe08a22")
 	draw_colored_polygon(PackedVector2Array([Vector2.ZERO, direction * range + perpendicular * width, direction * range - perpendicular * width]), color)
 	draw_circle(Vector2.ZERO, 14, Color("111728"))

@@ -23,6 +23,7 @@ var sfx_enabled := true
 
 var _detection_grace := 0.0
 var _safe_time := 0.0
+var _stealth_grace := 0.0
 
 
 func _ready() -> void:
@@ -51,6 +52,7 @@ func start_level(level_index: int, time_limit: float, new_objective: String) -> 
 	level_active = false
 	_detection_grace = 0.0
 	_safe_time = 0.0
+	_stealth_grace = 0.0
 	timer_changed.emit(timer_remaining)
 	suspicion_changed.emit(suspicion)
 	inventory_changed.emit(inventory.duplicate(), selected_slot)
@@ -67,10 +69,11 @@ func tick(delta: float) -> void:
 	timer_remaining = maxf(0.0, timer_remaining - delta)
 	timer_changed.emit(timer_remaining)
 	_detection_grace = maxf(0.0, _detection_grace - delta)
+	_stealth_grace = maxf(0.0, _stealth_grace - delta)
 	if _detection_grace <= 0.0:
 		_safe_time += delta
-		if _safe_time >= 0.75 and suspicion > 0.0:
-			set_suspicion(suspicion - 14.0 * delta)
+		if _safe_time >= 0.3 and suspicion > 0.0:
+			set_suspicion(suspicion - 30.0 * delta)
 	else:
 		_safe_time = 0.0
 	if timer_remaining <= 0.0:
@@ -78,11 +81,15 @@ func tick(delta: float) -> void:
 
 
 func report_detection(amount: float) -> void:
-	if not level_active:
+	if not level_active or _stealth_grace > 0.0:
 		return
 	_detection_grace = 0.18
 	_safe_time = 0.0
 	set_suspicion(suspicion + amount)
+
+
+func grant_stealth_grace(seconds: float) -> void:
+	_stealth_grace = maxf(_stealth_grace, seconds)
 
 
 func add_suspicion(amount: float) -> void:
