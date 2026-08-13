@@ -10,4 +10,4 @@ This ledger covers every asset used by the published demo of **เสพติ�
 | Music and sound effects | Group 19 / generated at runtime from mathematical waveforms | Project original, released under CC0-1.0 | Original short tones and an 8-second looping chiptune sequence. |
 | Godot Engine | [Godot Engine](https://godotengine.org/) | MIT | Used to build and export the game. |
 
-The published game does **not** load the starter kit's unverified sprite, music, icon, or platform texture files. They remain in Git history only as source material and are excluded from the final runtime by the Godot resource exporter.
+The published game does **not** load the starter kit's unverified sprite, music, icon, or platform texture files. A small number remain in the source tree for upstream compatibility, but they are explicitly excluded from the published runtime by the Godot resource exporter.

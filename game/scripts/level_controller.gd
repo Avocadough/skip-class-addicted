@@ -27,6 +27,7 @@ const LEVELS := {
 		"intro": "หลบลำแสง CCTV เก็บการบ้านปลอมและตอบคำถามให้ถูก\nจากนั้นค้นหากุญแจห้องเก็บของเพื่อเปิดทางออก",
 	},
 }
+const WORLD_PROP_SCRIPT: Script = preload("res://game/scripts/world_prop.gd")
 
 @export_range(1, 3) var level_index := 1
 
@@ -212,7 +213,7 @@ func _add_platform(center: Vector2, size: Vector2, color: Color) -> void:
 func _add_hide_spot(center: Vector2, label: String) -> void:
 	var decor := Node2D.new()
 	decor.position = center
-	decor.set_script(load("res://game/scripts/world_prop.gd"))
+	decor.set_script(WORLD_PROP_SCRIPT)
 	decor.call("configure", "locker", label, Color("315a7d"))
 	add_child(decor)
 	interactables.append({"node": decor, "kind": "hide", "label": label, "radius": 115.0})
@@ -221,7 +222,7 @@ func _add_hide_spot(center: Vector2, label: String) -> void:
 func _add_pickup(center: Vector2, item_id: String, label: String) -> void:
 	var prop := Node2D.new()
 	prop.position = center
-	prop.set_script(load("res://game/scripts/world_prop.gd"))
+	prop.set_script(WORLD_PROP_SCRIPT)
 	prop.call("configure", item_id, label, Color("ffe08a"))
 	add_child(prop)
 	interactables.append({"node": prop, "kind": "pickup", "item": item_id, "label": label, "radius": 95.0})
@@ -230,7 +231,7 @@ func _add_pickup(center: Vector2, item_id: String, label: String) -> void:
 func _add_vending_machine(center: Vector2) -> void:
 	var prop := Node2D.new()
 	prop.position = center
-	prop.set_script(load("res://game/scripts/world_prop.gd"))
+	prop.set_script(WORLD_PROP_SCRIPT)
 	prop.call("configure", "vending", "ตู้ขายขนม", Color("d45555"))
 	add_child(prop)
 	interactables.append({"node": prop, "kind": "vending", "label": "ตู้ขายขนม", "radius": 120.0})
@@ -239,7 +240,7 @@ func _add_vending_machine(center: Vector2) -> void:
 func _add_exit(center: Vector2, label: String, required_item: String) -> void:
 	var prop := Node2D.new()
 	prop.position = center
-	prop.set_script(load("res://game/scripts/world_prop.gd"))
+	prop.set_script(WORLD_PROP_SCRIPT)
 	prop.call("configure", "exit", label, Color("35a879"))
 	add_child(prop)
 	interactables.append({"node": prop, "kind": "exit", "item": required_item, "label": label, "radius": 125.0})
@@ -248,7 +249,7 @@ func _add_exit(center: Vector2, label: String, required_item: String) -> void:
 func _add_decor_table(center: Vector2, label: String) -> void:
 	var prop := Node2D.new()
 	prop.position = center
-	prop.set_script(load("res://game/scripts/world_prop.gd"))
+	prop.set_script(WORLD_PROP_SCRIPT)
 	prop.call("configure", "table", label, Color("8b633f"))
 	add_child(prop)
 
@@ -256,7 +257,7 @@ func _add_decor_table(center: Vector2, label: String) -> void:
 func _add_bookshelf(center: Vector2) -> void:
 	var prop := Node2D.new()
 	prop.position = center
-	prop.set_script(load("res://game/scripts/world_prop.gd"))
+	prop.set_script(WORLD_PROP_SCRIPT)
 	prop.call("configure", "bookshelf", "ชั้นหนังสือ", Color("735237"))
 	add_child(prop)
 

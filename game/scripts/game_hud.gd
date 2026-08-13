@@ -120,8 +120,7 @@ func _build_hud() -> void:
 	for index in 3:
 		var button := Button.new()
 		button.text = "%d  —" % (index + 1)
-		button.custom_minimum_size = Vector2(132, 46)
-		UIFactory.style_button(button, Color("34435d"), 15)
+		UIFactory.style_button(button, Color("34435d"), 15, Vector2(132, 46))
 		var slot := index
 		button.pressed.connect(func() -> void: GameState.select_slot(slot))
 		slots.add_child(button)
@@ -131,8 +130,7 @@ func _build_hud() -> void:
 	pause_button.text = "Ⅱ"
 	pause_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	pause_button.position = Vector2(1068, 92)
-	pause_button.custom_minimum_size = Vector2(46, 46)
-	UIFactory.style_button(pause_button, Color("34435d"), 19)
+	UIFactory.style_button(pause_button, Color("34435d"), 19, Vector2(46, 46))
 	pause_button.pressed.connect(_toggle_pause)
 	root.add_child(pause_button)
 
@@ -200,9 +198,8 @@ func _build_touch_controls() -> void:
 func _add_hold_button(parent: Control, text: String, action: String) -> void:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(82, 72)
 	button.modulate.a = 0.82
-	UIFactory.style_button(button, Color("245475"), 17)
+	UIFactory.style_button(button, Color("245475"), 17, Vector2(82, 72))
 	button.button_down.connect(func() -> void: _player.set_virtual_action(action, true))
 	button.button_up.connect(func() -> void: _player.set_virtual_action(action, false))
 	parent.add_child(button)
@@ -211,9 +208,8 @@ func _add_hold_button(parent: Control, text: String, action: String) -> void:
 func _add_tap_button(parent: Control, text: String, action: String) -> void:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(82, 72)
 	button.modulate.a = 0.82
-	UIFactory.style_button(button, Color("73446f"), 17)
+	UIFactory.style_button(button, Color("73446f"), 17, Vector2(82, 72))
 	button.pressed.connect(func() -> void: _player.virtual_tap(action))
 	parent.add_child(button)
 
@@ -233,8 +229,7 @@ func _hide_overlay() -> void:
 func _add_overlay_button(text: String, callback: Callable) -> void:
 	var button := Button.new()
 	button.text = text
-	button.custom_minimum_size = Vector2(220, 56)
-	UIFactory.style_button(button, Color("246b8e"), 17)
+	UIFactory.style_button(button, Color("246b8e"), 17, Vector2(220, 56))
 	button.pressed.connect(func() -> void:
 		AudioManager.play_sfx("click")
 		callback.call()

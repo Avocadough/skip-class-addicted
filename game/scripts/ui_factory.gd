@@ -2,10 +2,11 @@ class_name UIFactory
 extends RefCounted
 
 const FONT_PATH := "res://Assets/Fonts/Kodchasan-Bold.ttf"
+const UI_FONT: Font = preload(FONT_PATH)
 
 
 static func font() -> Font:
-	return load(FONT_PATH) as Font
+	return UI_FONT
 
 
 static func panel(color := Color("18233b"), radius := 12) -> StyleBoxFlat:
@@ -31,7 +32,7 @@ static func button_style(color: Color, hover: Color) -> Dictionary:
 	return {"normal": normal, "hover": over, "pressed": pressed}
 
 
-static func style_button(button: Button, color := Color("246b8e"), font_size := 22) -> void:
+static func style_button(button: Button, color := Color("246b8e"), font_size := 22, minimum_size := Vector2(260, 52)) -> void:
 	var styles := button_style(color, color.lightened(0.12))
 	button.add_theme_stylebox_override("normal", styles.normal)
 	button.add_theme_stylebox_override("hover", styles.hover)
@@ -40,7 +41,7 @@ static func style_button(button: Button, color := Color("246b8e"), font_size := 
 	button.add_theme_font_override("font", font())
 	button.add_theme_font_size_override("font_size", font_size)
 	button.add_theme_color_override("font_color", Color.WHITE)
-	button.custom_minimum_size = Vector2(260, 52)
+	button.custom_minimum_size = minimum_size
 
 
 static func style_label(label: Label, size := 24, color := Color.WHITE) -> void:
