@@ -1,4 +1,10 @@
-# เสพติดการโดดเรียน – Skip class addicted
+# Skip Class Addicted — Three-Level Demo | เสพติดการโดดเรียน
+
+A three-level 2D stealth-puzzle platformer set in a Thai school, built with Godot 4.7.1 for **CP410844 Group 19** from the [2D Platformer Starter Kit](https://github.com/computingkku/2D-Platformer-Starter-Kit).
+
+[Play the browser demo](https://avocadough.github.io/skip-class-addicted/) · [Five-level project](https://github.com/Avocadough/skip-clsss-addicted-2d/) · [Asset credits](ASSET_CREDITS.md)
+
+![Hallway level](publishing/itch.io/screenshot-01-hallway.png)
 
 เกม 2D แนว **Stealth-Puzzle Platformer** ในโรงเรียนไทย สร้างด้วย Godot 4.7.1 จากฐาน [2D Platformer Starter Kit](https://github.com/computingkku/2D-Platformer-Starter-Kit)
 
@@ -26,6 +32,16 @@
 | Pause | Esc | — |
 
 Reach **EXIT** before the timer reaches zero. Walking is quiet; running and landing create noise. Suspicion falls after you stay out of sight and reaches a failure state at 100.
+
+## Project map
+
+| Path | Contents |
+| --- | --- |
+| [project.godot](project.godot), [game/levels/](game/levels/) | Godot project and three levels |
+| [game/scripts/](game/scripts/) | Player, guards, cameras and gameplay logic |
+| [Scenes/](Scenes/), [Assets/](Assets/) | Starter scenes and assets |
+| [scripts/](scripts/), [docs/](docs/) | Validation scripts and Web export |
+| [publishing/itch.io/](publishing/itch.io/) | Screenshots and publication copy |
 
 ## Development and validation
 
