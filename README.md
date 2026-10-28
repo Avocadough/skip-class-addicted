@@ -1,8 +1,15 @@
-# Skip Class Addicted — Three-Level Demo | เสพติดการโดดเรียน
+<div align="center">
+  <h1>Skip Class Addicted — Three-Level Demo | เสพติดการโดดเรียน</h1>
+  <p>A three-level 2D stealth-puzzle platformer.</p>
+  <p>
+    <img src="https://img.shields.io/badge/Godot-4.7.1-478CBF" alt="Godot 4.7.1">
+    <img src="https://img.shields.io/badge/Language-GDScript-478CBF" alt="GDScript">
+  </p>
+  <p><a href="https://avocadough.github.io/skip-class-addicted/">Play the browser demo</a> &nbsp;·&nbsp; <a href="https://github.com/Avocadough/skip-clsss-addicted-2d/">Five-level project</a> &nbsp;·&nbsp; <a href="https://github.com/Avocadough/skip-class-addicted/blob/main/ASSET_CREDITS.md">Asset credits</a></p>
+</div>
 
 A three-level 2D stealth-puzzle platformer set in a Thai school, built with Godot 4.7.1 for **CP410844 Group 19** from the [2D Platformer Starter Kit](https://github.com/computingkku/2D-Platformer-Starter-Kit).
 
-[Play the browser demo](https://avocadough.github.io/skip-class-addicted/) · [Five-level project](https://github.com/Avocadough/skip-clsss-addicted-2d/) · [Asset credits](ASSET_CREDITS.md)
 
 ![Hallway level](publishing/itch.io/screenshot-01-hallway.png)
 
